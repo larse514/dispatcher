@@ -50,5 +50,6 @@ func (source AWSSource) GetRoutes(sourcename string) ([]Route, error) {
 	}
 
 	fmt.Println("response Status:", resp.Status)
+	log.Println("returning ", s.Routes)
 	return s.Routes, nil
 }
