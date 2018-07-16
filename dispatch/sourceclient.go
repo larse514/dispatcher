@@ -35,7 +35,7 @@ func (source AWSSource) GetRoutes(sourcename string) ([]Route, error) {
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
-
+	log.Println("DEBUG: retrieved response body ", body)
 	s := SourceDTO{}
 
 	err = json.Unmarshal([]byte(body), &s)

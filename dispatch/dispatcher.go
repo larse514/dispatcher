@@ -30,7 +30,7 @@ type Route struct {
 
 //Dispatch is a method to dispatch a message to a source's routes
 func (dispatcher LambdaDispatcher) Dispatch(message *handler.Message, source string) error {
-
+	log.Println("DEBUG: about to retrieve routes from source ", source)
 	routes, err := dispatcher.SourceClient.GetRoutes(source)
 
 	if err != nil {
@@ -39,6 +39,7 @@ func (dispatcher LambdaDispatcher) Dispatch(message *handler.Message, source str
 	}
 
 	for _, route := range routes {
+		log.Println("about to dispatch message ", message, " to ", route)
 		err = dispatcher.MessageDispatcher.DispatchMessage(message, route)
 	}
 

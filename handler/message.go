@@ -39,6 +39,7 @@ func (handler LambdaMessageHandler) DispatchMessage(c *gin.Context) {
 	err := c.ShouldBind(&message)
 
 	if err != nil {
+		log.Println("ERROR: error parsing request ", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"message": "invalid request",
 		})
