@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
 
@@ -22,6 +23,7 @@ var ginLambda *ginadapter.GinLambda
 // Handler is the main entry point for Lambda. Receives a proxy request and
 // returns a proxy response
 func Handler(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Println("handler started")
 	r := gin.Default()
 	sourceURL := os.Getenv(sourceURLKey)
 
