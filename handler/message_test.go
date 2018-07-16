@@ -24,6 +24,13 @@ func (mock MockBadMessageHandler) Dispatch(message *Message, source string) erro
 	return errors.New("AN ERROR")
 }
 
+type mockNotFound struct {
+	Dispatcher Dispatcher
+}
+
+func (mock mockNotFound) Dispatch(message *Message, source string) error {
+	return NotFoundError{ResourceName: "SOMENAME"}
+}
 func TestDispatchMessageSuccessReturnsStatusOk(t *testing.T) {
 	r := getRouter()
 
@@ -57,6 +64,28 @@ func TestDispatchMessageFailsReturnServiceUnavailable(t *testing.T) {
 		strings.NewReader(`{"message": "SAMPLEMESSAGE"}`))
 
 	expected := http.StatusServiceUnavailable
+
+	testHTTPResponse(t, r, req, func(w *httptest.ResponseRecorder) bool {
+		actual := w.Code
+
+		if actual != expected {
+			t.Log("Expected ", expected, " but got ", actual)
+			t.Fail()
+		}
+		return actual == expected
+	})
+
+}
+func TestDispatchMessageNotFoundErrorReturnsStatusNotFound(t *testing.T) {
+	r := getRouter()
+
+	handler := LambdaMessageHandler{Dispatcher: mockNotFound{}}
+	r.POST("/sources/:name/routes/messages", handler.DispatchMessage)
+
+	req, _ := http.NewRequest("POST", "/sources/sourcename/routes/messages",
+		strings.NewReader(`{"message": "SAMPLEMESSAGE"}`))
+
+	expected := http.StatusNotFound
 
 	testHTTPResponse(t, r, req, func(w *httptest.ResponseRecorder) bool {
 		actual := w.Code

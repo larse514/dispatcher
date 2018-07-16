@@ -28,18 +28,23 @@ type Route struct {
 	URL string `json:"url"`
 }
 
-//Dispatch is a method to dispatch a message to a source's routes
+//Dispatch is a method to send a message to a source's routes
 func (dispatcher LambdaDispatcher) Dispatch(message *handler.Message, source string) error {
 	log.Println("DEBUG: about to retrieve routes from source ", source)
 	routes, err := dispatcher.SourceClient.GetRoutes(source)
 
 	if err != nil {
-		log.Println("Error retrieving routes for a source ", err)
+		log.Println("ERROR: Error retrieving routes for a source ", err)
 		return errors.New("Error fetching routes for source")
 	}
 
+	if len(routes) < 1 {
+		log.Println("INFO: SourceClient returned empty Routes")
+		return handler.NotFoundError{ResourceName: source}
+	}
+
 	for _, route := range routes {
-		log.Println("about to dispatch message ", message, " to ", route)
+		log.Println("DEBUG: about to dispatch message ", message, " to ", route)
 		err = dispatcher.MessageDispatcher.DispatchMessage(message, route)
 	}
 

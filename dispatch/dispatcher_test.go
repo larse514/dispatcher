@@ -38,6 +38,12 @@ func (dispatcher mockBadMessageDispatcher) DispatchMessage(message *handler.Mess
 	return errors.New(messageDispatchError)
 }
 
+type mockNoRoutesSourceClient struct {
+}
+
+func (client mockNoRoutesSourceClient) GetRoutes(source string) ([]Route, error) {
+	return make([]Route, 0), nil
+}
 func TestNoErrorsReturnsNil(t *testing.T) {
 	//arrange
 	dispatcher := LambdaDispatcher{SourceClient: goodSourceClient{}, MessageDispatcher: mockMessageDispatcher{}}
@@ -75,6 +81,19 @@ func TestMessageDispatcherReturnsErrorReturnError(t *testing.T) {
 
 	if actual != expected {
 		t.Log("Expected ", expected, " got ", actual)
+		t.Fail()
+	}
+}
+
+func TestMessageDispatcherNoRoutesReturnsNotFoundError(t *testing.T) {
+	//arrange
+	dispatcher := LambdaDispatcher{SourceClient: mockNoRoutesSourceClient{}, MessageDispatcher: mockBadMessageDispatcher{}}
+	//act
+	actual := dispatcher.Dispatch(&handler.Message{}, "source")
+	//assert
+	_, isNotFound := actual.(handler.NotFoundError)
+	if !isNotFound {
+		t.Log("Expected error to be of type NotFoundError but got ", actual)
 		t.Fail()
 	}
 }

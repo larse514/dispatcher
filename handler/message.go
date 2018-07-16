@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -31,6 +32,16 @@ type Message struct {
 	Message string `json:"message"`
 }
 
+//NotFoundError is an error corresponding to a resource not found
+type NotFoundError struct {
+	ResourceName string
+}
+
+func (e NotFoundError) Error() string {
+	return fmt.Sprintf("Resource %s not found", e.ResourceName)
+
+}
+
 //DispatchMessage is method to handle dispatching message to consumers
 func (handler LambdaMessageHandler) DispatchMessage(c *gin.Context) {
 	message := Message{}
@@ -47,6 +58,16 @@ func (handler LambdaMessageHandler) DispatchMessage(c *gin.Context) {
 	}
 
 	err = handler.Dispatcher.Dispatch(&message, sourceName)
+
+	_, notFound := err.(NotFoundError)
+	//if no routes were found return not found
+	if notFound {
+		log.Println("INFO: resource not found ", err)
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "no routeable routes for source",
+		})
+		return
+	}
 
 	if err != nil {
 		log.Println("ERROR: Error making http call with error ", err)
