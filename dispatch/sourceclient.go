@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -38,19 +37,14 @@ func (source AWSSource) GetRoutes(sourcename string) ([]Route, error) {
 
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-	log.Println("DEBUG: retrieved response body ", body)
 	s := SourceDTO{}
-	s1 := ""
-	err = json.Unmarshal([]byte(body), &s)
-
-	err = json.Unmarshal([]byte(body), &s1)
+	err = json.NewDecoder(resp.Body).Decode(&s)
 
 	if err != nil {
 		log.Println("ERROR: error unmarshalling response ", err)
 		return nil, errors.New("Unmarshal error")
 	}
-	log.Println("response string? ", s1)
+
 	fmt.Println("response Status:", resp.Status)
 	log.Println("returning ", s.Routes)
 	return s.Routes, nil
