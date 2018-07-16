@@ -66,7 +66,7 @@
 			"data": [],
 			"dataMode": "raw",
 			"auth": null,
-			"time": 1531720671244,
+			"time": 1531772671688,
 			"name": "POST sources/{sourcename}/routes copy",
 			"description": "",
 			"collectionId": "e11cf07e-6332-9601-0f82-214081a283aa",
@@ -75,7 +75,7 @@
 			"tests": "\npm.test(\"Status code is 201\", function () {\n    pm.response.to.have.status(201);\n});\n\npm.test(\"Message is created\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.eql(\"created\");\n});",
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"route\": {\n\t\t\"url\": \"{{TEST_URL}}\"\n\t},\n\t\"withSourceCreation\": true\n}"
+			"rawModeData": "{\n\t\"route\": {\n\t\t\"url\": \"{{TEST_URL}}/test/api/hello\"\n\t},\n\t\"withSourceCreation\": true\n}"
 		},
 		{
 			"id": "0dae2332-e782-3f42-fb88-47d091e2c51d",
