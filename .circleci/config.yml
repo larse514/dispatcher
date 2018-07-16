@@ -22,7 +22,7 @@ jobs:
           aws configure set default.region us-east-1
           aws configure set default.output json
     - run: chmod +x deploy.sh
-    - run: ./deploy.sh ${STACK_NAME} ${DEPLOYMENT_BUCKET}
+    - run: ./deploy.sh ${STACK_NAME} ${DEPLOYMENT_BUCKET} ${DISPATCH_API_STACK}
     - run: 
         name: Integration tests
         command: |
