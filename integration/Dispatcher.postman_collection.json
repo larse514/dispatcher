@@ -162,10 +162,10 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "3fa6bc69-c0fa-4279-b17b-647357932226",
+						"id": "01e762ee-91fc-4151-b93f-0188c648654d",
 						"type": "text/javascript",
 						"exec": [
-							"pm.environment.set(\"SOURCE1\", \"Some\"+Math.random().toString(36).substring(7));"
+							""
 						]
 					}
 				}
@@ -176,12 +176,12 @@
 			"data": [],
 			"dataMode": "raw",
 			"auth": null,
-			"time": 1531717713633,
+			"time": 1531772385155,
 			"name": "Dispatch Message",
 			"description": "",
 			"collectionId": "e11cf07e-6332-9601-0f82-214081a283aa",
 			"responses": [],
-			"preRequestScript": "pm.environment.set(\"SOURCE1\", \"Some\"+Math.random().toString(36).substring(7));",
+			"preRequestScript": null,
 			"tests": "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n",
 			"currentHelper": null,
 			"helperAttributes": null,

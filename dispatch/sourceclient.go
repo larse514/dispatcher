@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -37,8 +36,6 @@ func (source AWSSource) GetRoutes(sourcename string) ([]Route, error) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	log.Println("body is ", string(body))
 	s := SourceDTO{}
 	err = json.NewDecoder(resp.Body).Decode(&s)
 
