@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  build:
+    working_directory: /go/src/github.com/larse514/dispatcher
+    docker:
+      - image: larse514/circleci-golang:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      COLLECTION: Dispatcher.postman_collection.json
+      STACK_NAME: dispatcherci
+      TEST_API_STACK: testapistack
+      DISPATCH_API_STACK: dispatcher-api-ci-test
+    steps:
+    - checkout
+    - run: mkdir -p $TEST_RESULTS
+    - restore_cache:
+        keys:
+          - v1-pkg-cache
+    - run: 
+        name: Configure AWS environment
+        command: |
+          aws configure set default.region us-east-1
+          aws configure set default.output json
+    - run: chmod +x deploy.sh
+    - run: ./deploy.sh ${STACK_NAME} ${DEPLOYMENT_BUCKET}
+    - run: 
+        name: Integration tests
+        command: |
+          cd integration && ./setup.sh ${STACK_NAME} ${TEST_API_STACK} ${DISPATCH_API_STACK} ${COLLECTION} && newman run ${COLLECTION}
+    - save_cache:
+        key: v1-pkg-cache
+        paths:
+          - "/go/pkg"
+
+    - store_artifacts:
+        path: /tmp/test-results
+        destination: raw-test-output
+
+    - store_test_results:
+        path: /tmp/test-results
