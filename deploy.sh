@@ -14,4 +14,4 @@ APIURL=`aws cloudformation describe-stacks \
 echo "retrieved ${APIURL}"
 make
 make package-aws DEPLOYMENT_BUCKET=${DEPLOYMENT_BUCKET} 
-make deploy STACK_NAME=${STACK_NAME} ENV=ci SOURCE_URL="${APIURL}/sources/:name/routes/messages"
+make deploy STACK_NAME=${STACK_NAME} ENV=ci SOURCE_URL="${APIURL}/sources/:name/routes"
