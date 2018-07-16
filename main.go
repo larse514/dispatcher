@@ -6,7 +6,6 @@ import (
 
 	"github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
-	"github.com/larse514/dispatcher-api/handlers"
 	"github.com/larse514/dispatcher/dispatch"
 	"github.com/larse514/dispatcher/handler"
 
@@ -33,7 +32,7 @@ func Handler(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse,
 	dispatcher := dispatch.LambdaDispatcher{SourceClient: sourceClient, MessageDispatcher: dispatchClient}
 	h := handler.LambdaMessageHandler{Dispatcher: dispatcher}
 	r.POST("/sources/:name/routes/messages", h.DispatchMessage)
-	r.GET("/ping", handlers.Ping)
+	r.GET("/ping", handler.Ping)
 	ginLambda = ginadapter.New(r)
 
 	return ginLambda.Proxy(req)
